@@ -1,11 +1,32 @@
 'use client';
 
-const Card = ({ title, content }: { title: string; content: string }) => {
+import { motion } from 'framer-motion';
+
+interface CardProps {
+  id: string;
+  title: string;
+  content: string;
+  onClick: () => void;
+  layoutId?: string;
+}
+
+const Card = ({ id, title, content, onClick }: CardProps) => {
   return (
-    <div className='bg-zinc-800 rounded-md p-4 shadow-lg shadow-neutral-950 break-inside-avoid mb-4'>
-      <p className='text-lg font-black'>{title}</p>
-      <p>{content}</p>
-    </div>
+    <motion.div
+      layoutId={`card-${id}`}
+      onClick={onClick}
+      className="bg-zinc-800 rounded-md p-4 shadow-lg shadow-neutral-950 
+                 break-inside-avoid mb-4 max-h-60 overflow-hidden cursor-pointer relative"
+    >
+      <p className="text-lg font-black mb-2 text-white">{title}</p>
+      <p className="text-zinc-300 whitespace-pre-wrap break-words">
+        {content.slice(0, 120)}{content.length > 120 && '...'}
+      </p>
+      {content.length > 120 && (
+        <div className="absolute bottom-0 left-0 w-full h-8 pointer-events-none 
+                        bg-gradient-to-t from-zinc-800 to-transparent" />
+      )}
+    </motion.div>
   );
 };
 
