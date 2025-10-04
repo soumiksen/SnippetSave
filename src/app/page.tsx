@@ -12,13 +12,13 @@ export default function Home() {
   }
 
   return (
-    <div className='min-h-screen h-screen w-full overflow-hidden flex flex-col justify-center items-center bg-gradient-to-b from-zinc-900 to-zinc-800 text-white px-4'>
+    <div className='min-h-screen h-screen w-full overflow-hidden flex flex-col justify-center items-center px-4'>
       <h1 className='text-4xl sm:text-5xl font-extrabold text-center mb-4'>
         Save Your Code Snippets{' '}
         <span className='text-indigo-500'>With Ease</span>
       </h1>
 
-      <p className='text-lg sm:text-xl text-zinc-300 text-center mb-8 max-w-2xl'>
+      <p className='text-lg sm:text-xl text-center mb-8 max-w-2xl'>
         Keep all your coding snippets organized, searchable, and accessible from
         anywhere. Focus on coding, not losing your valuable snippets.
       </p>

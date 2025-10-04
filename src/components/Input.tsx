@@ -11,7 +11,7 @@ const Input = ({
     <input
       type='text'
       className={`${
-        variant == 'primary' ? 'bg-zinc-900' : 'bg-zinc-800'
+        variant == 'primary' ? 'bg-background' : 'bg-primary'
       } rounded-md focus:outline-none p-2 ${className}`}
       placeholder={placeholder}
     />

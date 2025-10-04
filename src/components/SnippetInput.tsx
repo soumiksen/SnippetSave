@@ -19,7 +19,6 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Close input when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -68,12 +67,12 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
         layout
         transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
         ref={containerRef}
-        className={`grid space-y-3 overflow-hidden bg-zinc-800 mb-4 rounded-md text-left text-zinc-400 w-full md:w-[500px] p-4`}
+        className={`grid space-y-3 overflow-hidden bg-primary mb-4 rounded-md text-left w-full md:w-[500px] p-4`}
       >
         {!isFocused && (
           <button
             onClick={() => setIsFocused(true)}
-            className="w-full text-left text-zinc-400 hover:cursor-text"
+            className="w-full text-left hover:cursor-text"
           >
             Create new snippet
           </button>
@@ -85,13 +84,13 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
               placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="focus:outline-none p-2 rounded text-white text-lg font-bold"
+              className="focus:outline-none p-2 rounded text-lg font-bold"
               autoFocus
             />
 
             <div className="relative rounded">
               <div
-                className="absolute top-0 left-0 p-2 font-mono text-sm text-white pointer-events-none whitespace-pre-wrap overflow-hidden w-full"
+                className="absolute top-0 left-0 p-2 font-mono text-sm pointer-events-none whitespace-pre-wrap overflow-hidden w-full"
                 style={{ minHeight: '128px', wordWrap: 'break-word' }}
               >
                 {renderHighlightedCode()}
@@ -100,7 +99,7 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
               <textarea
                 ref={textareaRef}
                 placeholder={`Write your ${language} code here...`}
-                className="relative bg-transparent placeholder-zinc-500 focus:outline-none p-2 rounded resize-none text-transparent caret-white min-h-[128px] overflow-hidden font-mono text-sm leading-5 w-full"
+                className="relative bg-transparent placeholder-zinc-500 focus:outline-none p-2 rounded resize-none caret-white min-h-[128px] overflow-hidden font-mono text-sm leading-5 w-full"
                 value={code}
                 onChange={handleTextareaInput}
                 onKeyDown={handleTextareaKeyDown}
@@ -112,7 +111,7 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="bg-zinc-800 text-indigo-500 border border-indigo-500 px-2 py-1 appearance-none rounded-full text-sm w-24 text-center focus:outline-none hover:cursor-pointer"
+                className="text-indigo-500 border border-indigo-500 px-2 py-1 appearance-none rounded-full text-sm w-24 text-center focus:outline-none hover:cursor-pointer"
               >
                 <option value="javascript">JavaScript</option>
                 <option value="typescript">TypeScript</option>
@@ -122,7 +121,7 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
               </select>
 
               <button
-                className="bg-indigo-500 px-4 py-1 rounded-full hover:bg-indigo-600 text-white"
+                className="bg-indigo-500 px-4 py-1 rounded-full hover:bg-indigo-600 text-white hover:cursor-pointer"
                 onClick={() => {
                   handleSave();
                   setIsFocused(false);
