@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { signIn, signUp } from '@/lib/auth';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 const SignInSignUp = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const { signIn, signUp } = useAuth();
   const router = useRouter();
 
   const [signInData, setSignInData] = useState({
@@ -43,7 +44,7 @@ const SignInSignUp = () => {
       } else {
         setError(result.error || 'Sign in failed');
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
@@ -64,7 +65,7 @@ const SignInSignUp = () => {
       } else {
         setError(result.error || 'Sign up failed');
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
@@ -192,13 +193,13 @@ const SignInSignUp = () => {
                 <input
                   type='password'
                   name='password'
-                  placeholder='Password'
+                  placeholder='Password (8+ chars, upper, lower, number)'
                   value={signUpData.password}
                   onChange={handleSignUpChange}
                   className='p-2 rounded-xl focus:outline-none bg-zinc-700 border border-zinc-600 text-white'
                   required
                   disabled={isLoading}
-                  minLength={6}
+                  minLength={8}
                 />
                 <button
                   type='submit'

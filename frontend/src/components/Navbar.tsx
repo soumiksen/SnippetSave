@@ -1,12 +1,11 @@
 'use client';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
-import { logOut } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Input from './Input';
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const handleSignOut = async () => {

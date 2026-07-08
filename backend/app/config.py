@@ -24,6 +24,10 @@ class Config:
     # (e.g. redis://host:6379) once running more than one API instance.
     RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
 
+    # The frontend origin allowed to make cross-origin requests with credentials
+    # (needed so the browser will send/receive the refresh-token cookie).
+    FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

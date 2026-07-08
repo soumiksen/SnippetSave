@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from .config import get_config
 from .db import init_db
 from .extensions import limiter
@@ -10,6 +11,11 @@ def create_app() -> Flask:
 
     init_db(app)
     limiter.init_app(app)
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": app.config["FRONTEND_ORIGIN"]}},
+        supports_credentials=True,
+    )
 
     from .routes.auth import auth_bp
     from .routes.health import health_bp

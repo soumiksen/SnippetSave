@@ -1,12 +1,10 @@
-import { 
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-  User
-} from 'firebase/auth';
-import { auth } from './config';
-import { createUser, getUserById } from './firestore';
+import { apiRequest, ApiError, setAccessToken } from './api';
+
+export interface User {
+  id: string;
+  email: string;
+  displayname: string;
+}
 
 export interface AuthResult {
   success: boolean;
@@ -14,99 +12,54 @@ export interface AuthResult {
   error?: string;
 }
 
-export const signUp = async (
-  email: string, 
-  password: string, 
-  displayName: string
+export const signUpRequest = async (
+  email: string,
+  password: string,
+  displayname: string
 ): Promise<AuthResult> => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    
-    await updateProfile(user, {
-      displayName: displayName
+    const data = await apiRequest<{ user: User }>('/api/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, displayname }),
     });
-    
-    await createUser({
-      uid: user.uid,
-      displayName: displayName,
-      email: email,
-    });
-    
-    return {
-      success: true,
-      user: user
-    };
-  } catch (error: any) {
-    console.error('Sign up error:', error);
-    return {
-      success: false,
-      error: getAuthErrorMessage(error.code)
-    };
+    return { success: true, user: data.user };
+  } catch (error) {
+    return { success: false, error: (error as ApiError).message };
   }
 };
 
-export const signIn = async (
-  email: string, 
+export const signInRequest = async (
+  email: string,
   password: string
 ): Promise<AuthResult> => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return {
-      success: true,
-      user: userCredential.user
-    };
-  } catch (error: any) {
-    console.error('Sign in error:', error);
-    return {
-      success: false,
-      error: getAuthErrorMessage(error.code)
-    };
+    const data = await apiRequest<{ access_token: string; user: User }>(
+      '/api/auth/login',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      }
+    );
+    setAccessToken(data.access_token);
+    return { success: true, user: data.user };
+  } catch (error) {
+    return { success: false, error: (error as ApiError).message };
   }
 };
 
-export const logOut = async (): Promise<AuthResult> => {
+export const logOutRequest = async (): Promise<void> => {
   try {
-    await signOut(auth);
-    return {
-      success: true
-    };
-  } catch (error: any) {
-    console.error('Sign out error:', error);
-    return {
-      success: false,
-      error: 'Failed to sign out. Please try again.'
-    };
+    await apiRequest('/api/auth/logout', { method: 'POST' });
+  } finally {
+    setAccessToken(null);
   }
 };
 
-export const getCurrentUser = (): User | null => {
-  return auth.currentUser;
-};
-
-const getAuthErrorMessage = (errorCode: string): string => {
-  switch (errorCode) {
-    case 'auth/email-already-in-use':
-      return 'An account with this email already exists.';
-    case 'auth/invalid-email':
-      return 'Please enter a valid email address.';
-    case 'auth/operation-not-allowed':
-      return 'Email/password accounts are not enabled.';
-    case 'auth/weak-password':
-      return 'Password should be at least 6 characters.';
-    case 'auth/user-disabled':
-      return 'This account has been disabled.';
-    case 'auth/user-not-found':
-      return 'No account found with this email address.';
-    case 'auth/wrong-password':
-      return 'Incorrect password. Please try again.';
-    case 'auth/too-many-requests':
-      return 'Too many failed attempts. Please try again later.';
-    case 'auth/network-request-failed':
-      return 'Network error. Please check your connection.';
-    case 'auth/invalid-credential':
-      return 'Invalid credentials. Please try again.';
-    default:
-      return 'An unexpected error occurred. Please try again.';
+export const fetchCurrentUser = async (): Promise<User | null> => {
+  try {
+    const data = await apiRequest<{ user: User }>('/api/auth/me');
+    return data.user;
+  } catch {
+    return null;
   }
 };

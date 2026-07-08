@@ -13,6 +13,12 @@ snippets_bp = Blueprint("snippets", __name__)
 
 @snippets_bp.before_request
 def _require_auth():
+    # before_request runs even for the browser's automatic CORS preflight
+    # OPTIONS request, which never carries an Authorization header — let it
+    # through so flask-cors can answer it, or every cross-origin call 401s
+    # at the preflight stage before the real request is ever sent.
+    if request.method == "OPTIONS":
+        return None
     return authenticate_request()
 
 

@@ -2,19 +2,22 @@
 
 import { motion } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
-import { highlightCode } from '@/lib/highlightCode';
 
 interface SnippetInputProps {
-  code: string;
-  setCode: (code: string) => void;
+  content: string;
+  setContent: (content: string) => void;
   title: string;
   setTitle: (title: string) => void;
-  language: string;
-  setLanguage: (lang: string) => void;
   handleSave: () => void;
 }
 
-const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, handleSave }: SnippetInputProps) => {
+const SnippetInput = ({
+  content,
+  setContent,
+  title,
+  setTitle,
+  handleSave,
+}: SnippetInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -31,8 +34,7 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
   }, []);
 
   const handleTextareaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setCode(value);
+    setContent(e.target.value);
 
     const textarea = textareaRef.current;
     if (textarea) {
@@ -40,26 +42,6 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
       textarea.style.height = Math.max(textarea.scrollHeight, 128) + 'px';
     }
   };
-
-  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const textarea = e.target as HTMLTextAreaElement;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const value = textarea.value;
-
-      const newValue = value.substring(0, start) + '  ' + value.substring(end);
-      setCode(newValue);
-
-      setTimeout(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + 2;
-        handleTextareaInput(e as any);
-      }, 0);
-    }
-  };
-
-  const renderHighlightedCode = () => highlightCode(code, language);
 
   return (
     <div className="flex justify-center">
@@ -88,38 +70,16 @@ const SnippetInput = ({ code, setCode, title, setTitle, language, setLanguage, h
               autoFocus
             />
 
-            <div className="relative rounded">
-              <div
-                className="absolute top-0 left-0 p-2 font-mono text-sm pointer-events-none whitespace-pre-wrap overflow-hidden w-full"
-                style={{ minHeight: '128px', wordWrap: 'break-word' }}
-              >
-                {renderHighlightedCode()}
-              </div>
+            <textarea
+              ref={textareaRef}
+              placeholder="Write your snippet here..."
+              className="bg-transparent placeholder-zinc-500 focus:outline-none p-2 rounded resize-none min-h-[128px] overflow-hidden text-sm leading-5 w-full"
+              value={content}
+              onChange={handleTextareaInput}
+              spellCheck={false}
+            />
 
-              <textarea
-                ref={textareaRef}
-                placeholder={`Write your ${language} code here...`}
-                className="relative bg-transparent placeholder-zinc-500 focus:outline-none p-2 rounded resize-none caret-white min-h-[128px] overflow-hidden font-mono text-sm leading-5 w-full"
-                value={code}
-                onChange={handleTextareaInput}
-                onKeyDown={handleTextareaKeyDown}
-                spellCheck={false}
-              />
-            </div>
-
-            <div className="flex justify-between">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="text-indigo-500 border border-indigo-500 px-2 py-1 appearance-none rounded-full text-sm w-24 text-center focus:outline-none hover:cursor-pointer"
-              >
-                <option value="javascript">JavaScript</option>
-                <option value="typescript">TypeScript</option>
-                <option value="python">Python</option>
-                <option value="html">HTML</option>
-                <option value="plaintext">Plain Text</option>
-              </select>
-
+            <div className="flex justify-end">
               <button
                 className="bg-indigo-500 px-4 py-1 rounded-full hover:bg-indigo-600 text-white hover:cursor-pointer"
                 onClick={() => {

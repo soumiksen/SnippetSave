@@ -1,75 +1,98 @@
-// contexts/AuthContext.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User } from 'firebase/auth';
-import { auth } from '@/lib/config';
-import { getUserById } from '@/lib/firestore';
-import { User as UserData } from '@/lib/firestore';
+import { refreshAccessToken } from '@/lib/api';
+import {
+  User,
+  fetchCurrentUser,
+  logOutRequest,
+  signInRequest,
+  signUpRequest,
+} from '@/lib/auth';
+
+interface AuthActionResult {
+  success: boolean;
+  error?: string;
+}
 
 interface AuthContextType {
   user: User | null;
-  userData: UserData | null;
   loading: boolean;
-  refreshUserData: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<AuthActionResult>;
+  signUp: (
+    email: string,
+    password: string,
+    displayname: string
+  ) => Promise<AuthActionResult>;
+  logOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  userData: null,
   loading: true,
-  refreshUserData: async () => {}
+  signIn: async () => ({ success: false }),
+  signUp: async () => ({ success: false }),
+  logOut: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshUserData = async () => {
-    if (user) {
-      try {
-        const data = await getUserById(user.uid);
-        setUserData(data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    }
-  };
-
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setUser(user);
-      
-      if (user) {
-        try {
-          const userData = await getUserById(user.uid);
-          setUserData(userData);
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-          setUserData(null);
-        }
-      } else {
-        setUserData(null);
+    // The access token only lives in memory, so a hard refresh loses it —
+    // recover the session from the HttpOnly refresh-token cookie instead.
+    const restoreSession = async () => {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        setUser(await fetchCurrentUser());
       }
-      
       setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    restoreSession();
   }, []);
 
-  const value = {
-    user,
-    userData,
-    loading,
-    refreshUserData
+  const signIn = async (email: string, password: string) => {
+    const result = await signInRequest(email, password);
+    if (result.success && result.user) {
+      setUser(result.user);
+    }
+    return { success: result.success, error: result.error };
+  };
+
+  const signUp = async (
+    email: string,
+    password: string,
+    displayname: string
+  ) => {
+    const result = await signUpRequest(email, password, displayname);
+    if (!result.success) {
+      return { success: false, error: result.error };
+    }
+
+    // Signup doesn't establish a session by itself, so log in right after to
+    // match the "create account and land in the app" flow.
+    const loginResult = await signInRequest(email, password);
+    if (loginResult.success && loginResult.user) {
+      setUser(loginResult.user);
+      return { success: true };
+    }
+    return {
+      success: false,
+      error: loginResult.error || 'Account created, but sign in failed.',
+    };
+  };
+
+  const logOut = async () => {
+    await logOutRequest();
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, logOut }}>
       {children}
     </AuthContext.Provider>
   );
