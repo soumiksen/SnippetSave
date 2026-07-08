@@ -13,8 +13,10 @@ def create_app() -> Flask:
 
     from .routes.auth import auth_bp
     from .routes.health import health_bp
+    from .routes.snippets import snippets_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(health_bp, url_prefix="/api")
+    app.register_blueprint(snippets_bp, url_prefix="/api/snippets")
 
     return app

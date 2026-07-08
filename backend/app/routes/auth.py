@@ -21,7 +21,7 @@ REFRESH_COOKIE_PATH = "/api/auth"
 @auth_bp.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json(silent=True)
-    if not data:
+    if data is None:
         return jsonify({"error": "Request body must be JSON."}), 400
 
     validation = validate_signup(data)
@@ -48,7 +48,7 @@ def signup():
 @limiter.limit("5 per minute; 20 per hour")
 def login():
     data = request.get_json(silent=True)
-    if not data:
+    if data is None:
         return jsonify({"error": "Request body must be JSON."}), 400
 
     validation = validate_login(data)

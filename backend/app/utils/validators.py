@@ -1,8 +1,13 @@
 import re
+import uuid
 from dataclasses import dataclass, field
 
 _EMAIL_RE = re.compile(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
 _DISPLAY_NAME_RE = re.compile(r"^[\w\s\-]{2,50}$")
+_LANGUAGE_RE = re.compile(r"^[a-zA-Z0-9+#.\-]{1,50}$")
+
+MAX_SNIPPET_TITLE_LENGTH = 200
+MAX_SNIPPET_CONTENT_LENGTH = 100_000
 
 
 @dataclass
@@ -59,6 +64,66 @@ def validate_login(data: dict) -> ValidationResult:
         result.errors.append("Password is required.")
 
     return result
+
+
+def validate_snippet_create(data: dict) -> ValidationResult:
+    result = ValidationResult()
+
+    title = (data.get("title") or "").strip()
+    content = data.get("content") or ""
+    language = (data.get("language") or "").strip()
+
+    if not title:
+        result.errors.append("Title is required.")
+    elif len(title) > MAX_SNIPPET_TITLE_LENGTH:
+        result.errors.append(f"Title must not exceed {MAX_SNIPPET_TITLE_LENGTH} characters.")
+
+    if not content:
+        result.errors.append("Content is required.")
+    elif len(content) > MAX_SNIPPET_CONTENT_LENGTH:
+        result.errors.append(f"Content must not exceed {MAX_SNIPPET_CONTENT_LENGTH} characters.")
+
+    if language and not _LANGUAGE_RE.match(language):
+        result.errors.append("Language must be 1–50 characters (letters, numbers, '+', '#', '.', '-').")
+
+    return result
+
+
+def validate_snippet_update(data: dict) -> ValidationResult:
+    result = ValidationResult()
+
+    if not any(key in data for key in ("title", "content", "language")):
+        result.errors.append("At least one of title, content, or language must be provided.")
+        return result
+
+    if "title" in data:
+        title = (data.get("title") or "").strip()
+        if not title:
+            result.errors.append("Title cannot be empty.")
+        elif len(title) > MAX_SNIPPET_TITLE_LENGTH:
+            result.errors.append(f"Title must not exceed {MAX_SNIPPET_TITLE_LENGTH} characters.")
+
+    if "content" in data:
+        content = data.get("content") or ""
+        if not content:
+            result.errors.append("Content cannot be empty.")
+        elif len(content) > MAX_SNIPPET_CONTENT_LENGTH:
+            result.errors.append(f"Content must not exceed {MAX_SNIPPET_CONTENT_LENGTH} characters.")
+
+    if "language" in data:
+        language = (data.get("language") or "").strip()
+        if language and not _LANGUAGE_RE.match(language):
+            result.errors.append("Language must be 1–50 characters (letters, numbers, '+', '#', '.', '-').")
+
+    return result
+
+
+def is_valid_uuid(value: str) -> bool:
+    try:
+        uuid.UUID(str(value))
+        return True
+    except (ValueError, AttributeError, TypeError):
+        return False
 
 
 def _validate_password_strength(password: str, result: ValidationResult) -> None:
