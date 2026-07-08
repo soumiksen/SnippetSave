@@ -10,13 +10,29 @@ class Config:
     DB_POOL_MIN = int(os.getenv("DB_POOL_MIN", 1))
     DB_POOL_MAX = int(os.getenv("DB_POOL_MAX", 10))
 
+    # JWT access tokens are short-lived and stateless; refresh tokens are
+    # opaque, hashed in the DB, and revocable so logout/reuse can invalidate them.
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", SECRET_KEY)
+    JWT_ACCESS_TOKEN_EXPIRES_MINUTES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES_MINUTES", 15))
+    JWT_REFRESH_TOKEN_EXPIRES_DAYS = int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES_DAYS", 7))
+
+    # Brute-force protection: lock the account after too many bad passwords.
+    MAX_FAILED_LOGIN_ATTEMPTS = int(os.getenv("MAX_FAILED_LOGIN_ATTEMPTS", 5))
+    ACCOUNT_LOCKOUT_MINUTES = int(os.getenv("ACCOUNT_LOCKOUT_MINUTES", 15))
+
+    # In-memory storage only works for a single process; point this at Redis
+    # (e.g. redis://host:6379) once running more than one API instance.
+    RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SESSION_COOKIE_SECURE = False
 
 
 class ProductionConfig(Config):
     DEBUG = False
+    SESSION_COOKIE_SECURE = True
 
 
 config_map = {

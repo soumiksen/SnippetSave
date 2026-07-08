@@ -44,6 +44,23 @@ def validate_signup(data: dict) -> ValidationResult:
     return result
 
 
+def validate_login(data: dict) -> ValidationResult:
+    result = ValidationResult()
+
+    email = (data.get("email") or "").strip()
+    password = data.get("password") or ""
+
+    if not email:
+        result.errors.append("Email is required.")
+    elif len(email) > 255:
+        result.errors.append("Invalid email format.")
+
+    if not password:
+        result.errors.append("Password is required.")
+
+    return result
+
+
 def _validate_password_strength(password: str, result: ValidationResult) -> None:
     if len(password) < 8:
         result.errors.append("Password must be at least 8 characters.")
