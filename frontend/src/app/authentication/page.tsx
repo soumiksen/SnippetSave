@@ -87,15 +87,18 @@ const SignInSignUp = () => {
   };
 
   return (
-    <div className='flex h-screen w-full items-center justify-center overflow-hidden -mt-22'>
-      <div className='bg-zinc-800 p-6 rounded-lg lg:w-1/3 md:w-1/2 w-full mx-4'>
+    <div className='relative flex h-[calc(100vh-64px)] w-full items-center justify-center overflow-hidden px-4'>
+      <div className='pointer-events-none absolute -top-32 -left-32 w-80 h-80 rounded-full bg-accent/20 blur-3xl' />
+      <div className='pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/10 blur-3xl' />
+
+      <div className='relative bg-primary border border-border shadow-[var(--card-shadow)] p-7 rounded-2xl lg:w-1/3 md:w-1/2 w-full'>
         <div className='flex items-center justify-center mb-6'>
-          <div className='bg-zinc-700 p-1 rounded-full flex gap-1 w-fit hover:cursor-pointer'>
+          <div className='bg-secondary p-1 rounded-full flex gap-1 w-fit'>
             <button
               onClick={() => handleToggle(true)}
               disabled={isLoading}
-              className={`px-4 py-1 rounded-full text-sm font-medium transition-colors hover:cursor-pointer disabled:cursor-not-allowed ${
-                isSignIn ? 'bg-indigo-500 text-white' : 'text-zinc-300'
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors hover:cursor-pointer disabled:cursor-not-allowed ${
+                isSignIn ? 'bg-accent text-white shadow-sm' : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Sign In
@@ -103,8 +106,8 @@ const SignInSignUp = () => {
             <button
               onClick={() => handleToggle(false)}
               disabled={isLoading}
-              className={`px-4 py-1 rounded-full text-sm font-medium transition-colors hover:cursor-pointer disabled:cursor-not-allowed ${
-                !isSignIn ? 'bg-indigo-500 text-white' : 'text-zinc-300'
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors hover:cursor-pointer disabled:cursor-not-allowed ${
+                !isSignIn ? 'bg-accent text-white shadow-sm' : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Sign Up
@@ -129,14 +132,14 @@ const SignInSignUp = () => {
                 onSubmit={handleSignInSubmit}
                 className='flex flex-col gap-4 h-full'
               >
-                <h1 className='text-2xl font-black text-center text-white'>Sign In</h1>
+                <h1 className='text-2xl font-black text-center text-text-primary'>Sign In</h1>
                 <input
                   type='email'
                   name='email'
                   placeholder='Email'
                   value={signInData.email}
                   onChange={handleSignInChange}
-                  className='p-2 rounded-xl focus:outline-none bg-zinc-700 border border-zinc-600 text-white'
+                  className='p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/40 bg-secondary border border-border text-text-primary placeholder:text-text-secondary transition-shadow'
                   required
                   disabled={isLoading}
                 />
@@ -146,17 +149,17 @@ const SignInSignUp = () => {
                   placeholder='Password'
                   value={signInData.password}
                   onChange={handleSignInChange}
-                  className='p-2 rounded-xl focus:outline-none bg-zinc-700 border border-zinc-600 text-white'
+                  className='p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/40 bg-secondary border border-border text-text-primary placeholder:text-text-secondary transition-shadow'
                   required
                   disabled={isLoading}
                 />
                 <button
                   type='submit'
                   disabled={isLoading}
-                  className={`text-white font-bold py-2 px-4 rounded-xl mt-auto transition-colors ${
-                    isLoading 
-                      ? 'bg-gray-500 cursor-not-allowed' 
-                      : 'bg-indigo-500 hover:bg-indigo-600 hover:cursor-pointer'
+                  className={`text-white font-bold py-2.5 px-4 rounded-xl mt-auto transition-colors ${
+                    isLoading
+                      ? 'bg-gray-500 cursor-not-allowed'
+                      : 'bg-accent hover:bg-accent-hover hover:cursor-pointer shadow-lg shadow-accent/20'
                   }`}
                 >
                   {isLoading ? 'Signing In...' : 'Sign In'}
@@ -169,14 +172,14 @@ const SignInSignUp = () => {
                 onSubmit={handleSignUpSubmit}
                 className='flex flex-col gap-4 h-full'
               >
-                <h1 className='text-2xl font-black text-center text-white'>Sign Up</h1>
+                <h1 className='text-2xl font-black text-center text-text-primary'>Sign Up</h1>
                 <input
                   type='text'
                   name='name'
                   placeholder='Full Name'
                   value={signUpData.name}
                   onChange={handleSignUpChange}
-                  className='p-2 rounded-xl focus:outline-none bg-zinc-700 border border-zinc-600 text-white'
+                  className='p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/40 bg-secondary border border-border text-text-primary placeholder:text-text-secondary transition-shadow'
                   required
                   disabled={isLoading}
                 />
@@ -186,7 +189,7 @@ const SignInSignUp = () => {
                   placeholder='Email'
                   value={signUpData.email}
                   onChange={handleSignUpChange}
-                  className='p-2 rounded-xl focus:outline-none bg-zinc-700 border border-zinc-600 text-white'
+                  className='p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/40 bg-secondary border border-border text-text-primary placeholder:text-text-secondary transition-shadow'
                   required
                   disabled={isLoading}
                 />
@@ -196,7 +199,7 @@ const SignInSignUp = () => {
                   placeholder='Password (8+ chars, upper, lower, number)'
                   value={signUpData.password}
                   onChange={handleSignUpChange}
-                  className='p-2 rounded-xl focus:outline-none bg-zinc-700 border border-zinc-600 text-white'
+                  className='p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/40 bg-secondary border border-border text-text-primary placeholder:text-text-secondary transition-shadow'
                   required
                   disabled={isLoading}
                   minLength={8}
@@ -204,10 +207,10 @@ const SignInSignUp = () => {
                 <button
                   type='submit'
                   disabled={isLoading}
-                  className={`text-white font-bold py-2 px-4 rounded-xl mt-auto transition-colors ${
-                    isLoading 
-                      ? 'bg-gray-500 cursor-not-allowed' 
-                      : 'bg-indigo-500 hover:bg-indigo-600 hover:cursor-pointer'
+                  className={`text-white font-bold py-2.5 px-4 rounded-xl mt-auto transition-colors ${
+                    isLoading
+                      ? 'bg-gray-500 cursor-not-allowed'
+                      : 'bg-accent hover:bg-accent-hover hover:cursor-pointer shadow-lg shadow-accent/20'
                   }`}
                 >
                   {isLoading ? 'Creating Account...' : 'Sign Up'}

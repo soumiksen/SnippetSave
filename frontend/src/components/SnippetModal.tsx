@@ -43,7 +43,7 @@ const SnippetModal = ({
 
   return (
     <motion.div
-      className='fixed inset-0 z-50 flex justify-center items-center bg-black/50 p-4'
+      className='fixed inset-0 z-50 flex justify-center items-center bg-black/50 backdrop-blur-sm p-4'
       onClick={closeModal}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -52,13 +52,24 @@ const SnippetModal = ({
       <motion.div
         layoutId={`card-${snippet.id}`}
         onClick={(e) => e.stopPropagation()}
-        className='bg-zinc-800 rounded-md p-6 shadow-2xl shadow-black w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col'
+        className='bg-primary border border-border rounded-2xl p-6 shadow-2xl shadow-black/30 w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col'
       >
-        <input
-          value={snippet.title}
-          onChange={(e) => setTitle(e.target.value)}
-          className='text-white font-bold text-2xl p-2 rounded mb-4 focus:outline-none'
-        />
+        <div className='flex items-start justify-between gap-3 mb-4'>
+          <input
+            value={snippet.title}
+            onChange={(e) => setTitle(e.target.value)}
+            className='text-text-primary font-bold text-2xl p-2 rounded-lg focus:outline-none focus:bg-secondary flex-1 min-w-0 transition-colors'
+          />
+          <button
+            onClick={closeModal}
+            aria-label='Close'
+            className='p-2 rounded-full text-text-secondary hover:text-text-primary hover:bg-secondary transition-colors hover:cursor-pointer shrink-0'
+          >
+            <svg className='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
+              <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
+            </svg>
+          </button>
+        </div>
 
         <textarea
           ref={textareaRef}
@@ -66,12 +77,12 @@ const SnippetModal = ({
           onChange={handleTextareaInput}
           placeholder='Edit your snippet here...'
           spellCheck={false}
-          className='flex-1 bg-transparent text-white focus:outline-none p-2 rounded resize-none text-sm leading-5 w-full min-h-[128px] overflow-auto'
+          className='flex-1 bg-secondary/50 text-text-primary focus:outline-none p-3 rounded-lg resize-none font-mono text-sm leading-5 w-full min-h-[128px] overflow-auto'
         />
 
-        <div className='flex justify-end mt-4'>
+        <div className='flex justify-end mt-4 pt-4 border-t border-border'>
           <button
-            className='border border-red-500 text-red-500 px-4 py-1 mr-2 rounded-full hover:cursor-pointer hover:bg-red-500 hover:text-white transition-all duration-200'
+            className='border border-red-500/60 text-red-500 px-4 py-1.5 mr-2 rounded-full hover:cursor-pointer hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200'
             onClick={() => {
               handleDelete();
               closeModal();
@@ -85,7 +96,7 @@ const SnippetModal = ({
               handleUpdate();
               closeModal();
             }}
-            className='bg-indigo-500 px-4 py-1 rounded-full hover:bg-indigo-600 text-white hover:cursor-pointer'
+            className='bg-accent px-4 py-1.5 rounded-full hover:bg-accent-hover text-white font-medium shadow-sm hover:cursor-pointer transition-colors'
           >
             Update
           </button>

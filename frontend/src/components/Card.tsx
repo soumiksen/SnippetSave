@@ -15,16 +15,18 @@ const Card = ({ id, title, content, onClick }: CardProps) => {
     <motion.div
       layoutId={`card-${id}`}
       onClick={onClick}
-      className="bg-primary rounded-md p-4  
+      whileHover={{ y: -2 }}
+      className="bg-primary border border-border rounded-xl p-4 shadow-[var(--card-shadow)]
+                 hover:border-accent/40 hover:shadow-lg transition-[box-shadow,border-color]
                  break-inside-avoid mb-4 max-h-60 overflow-hidden cursor-pointer relative"
     >
-      <p className="text-lg font-black mb-2">{title}</p>
-      <p className="whitespace-pre-wrap break-words">
+      <p className="text-base font-bold mb-2 text-text-primary truncate">{title}</p>
+      <p className="whitespace-pre-wrap break-words font-mono text-xs leading-5 text-text-secondary">
         {content.slice(0, 120)}{content.length > 120 && '...'}
       </p>
       {content.length > 120 && (
-        <div className="absolute bottom-0 left-0 w-full h-8 pointer-events-none 
-                        bg-gradient-to-t from-white dark:from-zinc-800 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-8 pointer-events-none
+                        bg-gradient-to-t from-primary to-transparent" />
       )}
     </motion.div>
   );

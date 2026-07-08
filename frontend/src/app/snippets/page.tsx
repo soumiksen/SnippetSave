@@ -64,7 +64,7 @@ const Snippets = () => {
   if (loading) return null;
 
   return (
-    <div className='grid py-5'>
+    <div className='grid py-8 px-4'>
       <SnippetInput
         content={content}
         setContent={setContent}
@@ -73,17 +73,27 @@ const Snippets = () => {
         handleSave={handleCreateSnippet}
       />
 
-      <div className='columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 p-4'>
-        {snippets.map((snippet) => (
-          <Card
-            key={snippet.id}
-            id={snippet.id}
-            title={snippet.title}
-            content={snippet.content}
-            onClick={() => setSelectedSnippet(snippet)}
-          />
-        ))}
-      </div>
+      {snippets.length === 0 ? (
+        <div className='flex flex-col items-center justify-center text-center py-16 text-text-secondary'>
+          <div className='w-12 h-12 rounded-full bg-accent-soft text-accent flex items-center justify-center mb-3 font-mono text-lg'>
+            {'{ }'}
+          </div>
+          <p className='font-medium text-text-primary'>No snippets yet</p>
+          <p className='text-sm mt-1'>Create your first snippet above to get started.</p>
+        </div>
+      ) : (
+        <div className='columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 p-4'>
+          {snippets.map((snippet) => (
+            <Card
+              key={snippet.id}
+              id={snippet.id}
+              title={snippet.title}
+              content={snippet.content}
+              onClick={() => setSelectedSnippet(snippet)}
+            />
+          ))}
+        </div>
+      )}
 
       {selectedSnippet && (
         <SnippetModal

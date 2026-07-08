@@ -49,13 +49,20 @@ const SnippetInput = ({
         layout
         transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
         ref={containerRef}
-        className={`grid space-y-3 overflow-hidden bg-primary mb-4 rounded-md text-left w-full md:w-[500px] p-4`}
+        className={`grid space-y-3 overflow-hidden mb-4 rounded-xl text-left w-full md:w-[500px] p-4 border transition-colors ${
+          isFocused
+            ? 'bg-primary border-accent/40 shadow-[var(--card-shadow)]'
+            : 'bg-secondary/60 border-dashed border-border hover:border-accent/40 hover:bg-secondary'
+        }`}
       >
         {!isFocused && (
           <button
             onClick={() => setIsFocused(true)}
-            className="w-full text-left hover:cursor-text"
+            className="w-full flex items-center gap-2 text-left text-text-secondary hover:cursor-text"
           >
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-accent-soft text-accent text-base leading-none">
+              +
+            </span>
             Create new snippet
           </button>
         )}
@@ -66,22 +73,28 @@ const SnippetInput = ({
               placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="focus:outline-none p-2 rounded text-lg font-bold"
+              className="focus:outline-none p-2 rounded-lg text-lg font-bold text-text-primary placeholder:text-text-secondary"
               autoFocus
             />
 
             <textarea
               ref={textareaRef}
               placeholder="Write your snippet here..."
-              className="bg-transparent placeholder-zinc-500 focus:outline-none p-2 rounded resize-none min-h-[128px] overflow-hidden text-sm leading-5 w-full"
+              className="bg-secondary/50 placeholder-text-secondary focus:outline-none p-2 rounded-lg resize-none min-h-[128px] overflow-hidden text-sm font-mono leading-5 w-full text-text-primary"
               value={content}
               onChange={handleTextareaInput}
               spellCheck={false}
             />
 
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <button
-                className="bg-indigo-500 px-4 py-1 rounded-full hover:bg-indigo-600 text-white hover:cursor-pointer"
+                className="px-4 py-1.5 rounded-full text-text-secondary hover:bg-secondary hover:cursor-pointer transition-colors"
+                onClick={() => setIsFocused(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-accent px-4 py-1.5 rounded-full hover:bg-accent-hover text-white font-medium hover:cursor-pointer shadow-sm transition-colors"
                 onClick={() => {
                   handleSave();
                   setIsFocused(false);

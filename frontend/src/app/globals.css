@@ -1,25 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #f9fafb;
-  --secondary: #f3f4f6;
+  --background: #fafafa;
+  --foreground: #18181b;
+  --primary: #ffffff;
+  --secondary: #f4f4f5;
   --accent: #6366f1;
-  --border: #e5e7eb;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
+  --accent-hover: #4f46e5;
+  --accent-soft: #eef2ff;
+  --border: #e4e4e7;
+  --text-primary: #18181b;
+  --text-secondary: #71717a;
+  --card-shadow: 0 1px 2px rgba(24, 24, 27, 0.04), 0 8px 24px -8px rgba(24, 24, 27, 0.08);
+  --ring: rgba(99, 102, 241, 0.35);
 }
 
 :root.dark {
-  --background: oklch(21% 0.006 285.885);
-  --foreground: #ededed;
-  --primary: #27272a;
-  --secondary: #3f3f46;
+  --background: oklch(16% 0.006 285.885);
+  --foreground: #f4f4f5;
+  --primary: oklch(21% 0.006 285.885);
+  --secondary: oklch(26% 0.007 285.885);
   --accent: #818cf8;
-  --border: #52525b;
-  --text-primary: #f9fafb;
-  --text-secondary: #d4d4d8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: rgba(129, 140, 248, 0.12);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  --ring: rgba(129, 140, 248, 0.4);
 }
 
 @theme inline {
@@ -28,6 +36,8 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
   --color-border: var(--border);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
@@ -35,9 +45,36 @@
   --font-mono: var(--font-geist-mono);
 }
 
+* {
+  border-color: var(--border);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
