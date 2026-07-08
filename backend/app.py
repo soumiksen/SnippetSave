@@ -1,14 +1,6 @@
-from flask import Flask, jsonify
+from app import create_app
 
-app = Flask(__name__)
+app = create_app()
 
-@app.route('/api/health', methods=['GET'])
-def health():
-    return jsonify({'status': 'healthy'}), 200
-
-@app.route('/api/snippets', methods=['GET'])
-def get_snippets():
-    return jsonify({'snippets': []}), 200
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
